@@ -1,0 +1,9 @@
+/* font-family: 'Amatic SC', cursive;
+font-family: 'Alfa Slab One', cursive; */
+
+#canvas {
+    display: flex;
+    margin: 10px;
+    background-color: black;
+}
+
