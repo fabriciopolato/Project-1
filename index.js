@@ -34,80 +34,73 @@ window.onload = () => {
         canvas.width = screenWidth;
         canvas.height = screenHeight;
     })
-    window.addEventListener('keydown', function(event){
-        let randomNum = Math.floor(Math.random() * 99);
-        let randomNum2 = Math.floor(Math.random() * 99);
-        let randomNum3 = Math.floor(Math.random() * 99);
-        document.querySelector('body').style.backgroundColor = `#${randomNum}${randomNum2}${randomNum3}`;
-    })
-    //============================================================================
+ //============================================================================
     
     class Player {
         constructor(playerX) {
-            this.playerWidth = 40;
-            this.playerHeight = 40;
+            this.playerWidth = 80;
+            this.playerHeight = 80;
             this.playerX = playerX;
             this.playerY = screenHeight - this.playerHeight;
             this.playerRight = playerX + this.playerWidth;
             this.playerBottom = this.playerY + this.playerHeight;
-            this.updatePosition = {left: false, rigth: false};
+            this.playerSpeed = 20;
+            this.updatePosition = {left: false, right: false};
             document.addEventListener('keydown', (event) => this.keyDownEvent(event.keyCode));
             document.addEventListener('keyup', (event) => this.keyUpEvent(event.keyCode));
+            console.log(this.updatePosition)
         }
 
         drawPlayer() {
+            ctx.fillStyle = 'red';
             ctx.fillRect(this.playerX, this.playerY, this.playerWidth, this.playerHeight);
         }
 
         updatePlayer() {
-            ctx.strokeStyle = `red`;
-            ctx.strokeRect(this.playerX, this.playerY, this.playerWidth, this.playerHeight);
+            ctx.fillStyle = 'red';
+            ctx.fillRect(this.playerX, this.playerY, this.playerWidth, this.playerHeight);
         }
 
         keyUpEvent(keyCode) {
             switch(keyCode) {
                 case 37:
-                    console.log('left')
                     this.updatePosition.left = false;
                 break;
                 case 39:
-                    this.updatePosition.rigth = false;
+                    this.updatePosition.right = false;
                 break;
             }
         }
 
         keyDownEvent(keyCode) {
-            console.log(keyCode)
             switch(keyCode) {
                 case 37:
                     this.updatePosition.left = true;
-                    console.log(this.updatePlayer.left)
                 break;
                 case 39:
-                    this.updatePosition.rigth = true;
+                    this.updatePosition.right = true;
                 break;
             }
         }
 
         movePlayer() {
-            console.log('movePlayer')
-            // console.log(this.updatePlayer.right)
-            if(this.updatePlayer.left) {
-                this.playerX -= 5;
-                console.log('-x')
+            if(this.updatePosition.left) {
+                this.playerX -= this.playerSpeed;
             }
-            if(this.updatePlayer.rigth) {
-                this.playerX += 5;
-                console.log('+x')
+            if(this.updatePosition.right) {
+                this.playerX += this.playerSpeed;
             }
         }
     }
 
     class Letter {
         constructor() {
-            this.width = canvas.width/50;
-            this.height = 30;
+            //Math.round(Math.random() * (canvas.width - 20)) -- it selects a random X between 0 and canvas.width minus 20px (margin), so it can fit on the screen without passing it
+            this.letterX = Math.round(Math.random() * (screenWidth - 20));
+            this.letterY = screenWidth/35;
             this.arrayLetters = ['A','B','C','D','E','F','G','H','I','J','L','M','N','O','P','Q','R','S','T','U','V','X','Z'];
+            this.speedLetter = 15;
+            this.letter = this.chooseLetter();
         }
 
         chooseLetter() {
@@ -118,14 +111,22 @@ window.onload = () => {
         callLetterOnScreen() {
             ctx.fillStyle = "white";
             ctx.font = screenWidth/35 + 'px Arial'
-            let letter = this.chooseLetter();
-            //Math.round(Math.random() * (canvas.width - 20)) -- it selects a random X between 0 and canvas.width minus 20px, so it can fit on the screen without passing it
-            ctx.fillText(letter, Math.round(Math.random() * (canvas.width - 20)), screenWidth/35);
+            ctx.fillText(this.letter, this.letterX, this.letterY);
         }
 
-        // moveLetter() {
-
-        // }
+        moveLetter() {
+            console.log('moveLetter')
+            if (this.letterY <= screenHeight) {
+                this.letterY += this.speedLetter;
+              } else {
+                this.letterY = 0;
+                this.letterX = Math.round(Math.random() * (screenWidth - 20));
+                this.letter = this.chooseLetter();
+              }
+            
+            ctx.fillText(this.letter, this.letterX, this.letterY);
+            // ctx.clearRect(0, 0, screen.width, screen.height);
+        }
     }
     
 //ARRAY OF WORDS (OBJECTS)
@@ -152,6 +153,8 @@ window.onload = () => {
     let letter = new Letter();
     let player = new Player(50);
     let count = 3;
+    let startedGame = false;
+    let startedScreen = false;
 
     function startScreen() {
         clearScreen();
@@ -166,6 +169,7 @@ window.onload = () => {
             ctx.fillText('GO!',screenWidth/2 - screenWidth/20, screenHeight/2 + 20);
             setTimeout(clearScreen, 1000);
             setTimeout(startGame, 1000);
+            startedScreen = true;
         }
         return count--;
     }
@@ -175,7 +179,7 @@ window.onload = () => {
         console.log('START - jogo começou');
         player.drawPlayer();
         letter.callLetterOnScreen();
-        return true;
+        startedGame = true;
     }
 
     function restartGame() {
@@ -186,13 +190,22 @@ window.onload = () => {
     function clearScreen() {
         ctx.clearRect(0, 0, screen.width, screen.height);
     }
+
+    
 //============================================================================
 
     function updateGame() {
+        if(startedScreen) {
+            clearScreen();
             player.movePlayer();
             player.updatePlayer();
+        }
+        if(startedGame)
+            letter.moveLetter();
+        
+
         // // startGame();
-        // clearScreen();
+        
         // player.movePlayer()
     }
 //============================================================================
