@@ -34,12 +34,13 @@ window.onload = () => {
         canvas.width = screenWidth;
         canvas.height = screenHeight;
     })
- //============================================================================
+//============================================================================
     
+//PLAYER
     class Player {
         constructor(playerX) {
-            this.playerWidth = 80;
-            this.playerHeight = 80;
+            this.playerWidth = 40;
+            this.playerHeight = 40;
             this.playerX = playerX;
             this.playerY = screenHeight - this.playerHeight;
             this.playerRight = playerX + this.playerWidth;
@@ -84,22 +85,34 @@ window.onload = () => {
         }
 
         movePlayer() {
-            if(this.updatePosition.left) {
+            if(this.updatePosition.left && this.playerX > screenWidth*0.01) {
                 this.playerX -= this.playerSpeed;
             }
-            if(this.updatePosition.right) {
+            if(this.updatePosition.right && this.playerX < screenWidth*0.97) {
                 this.playerX += this.playerSpeed;
             }
         }
+
+        right() {
+            return this.playerRight = this.playerX + this.playerWidth;
+        }
+
+        left() {
+            return this.playerX
+        }
     }
+//============================================================================
+
+//LETTER
+let letterSize = screenWidth/35;
 
     class Letter {
         constructor() {
             //Math.round(Math.random() * (canvas.width - 20)) -- it selects a random X between 0 and canvas.width minus 20px (margin), so it can fit on the screen without passing it
             this.letterX = Math.round(Math.random() * (screenWidth - 20));
-            this.letterY = screenWidth/35;
+            this.letterY = -20;
             this.arrayLetters = ['A','B','C','D','E','F','G','H','I','J','L','M','N','O','P','Q','R','S','T','U','V','X','Z'];
-            this.speedLetter = 15;
+            this.speedLetter = 5;
             this.letter = this.chooseLetter();
         }
 
@@ -108,27 +121,23 @@ window.onload = () => {
             return this.arrayLetters[randomIndex];
         }
 
-        callLetterOnScreen() {
-            ctx.fillStyle = "white";
-            ctx.font = screenWidth/35 + 'px Arial'
-            ctx.fillText(this.letter, this.letterX, this.letterY);
-        }
-
-        moveLetter() {
-            console.log('moveLetter')
+        drawAndMoveLetter() {
             if (this.letterY <= screenHeight) {
                 this.letterY += this.speedLetter;
               } else {
-                this.letterY = 0;
-                this.letterX = Math.round(Math.random() * (screenWidth - 20));
+                this.letterY = -20;
+                this.letterX = Math.round(Math.random() * (screenWidth*0.94) + screenWidth*0.03);
                 this.letter = this.chooseLetter();
               }
-            
+
+            ctx.fillStyle = "white";
+            ctx.font = letterSize + 'px Arial'
             ctx.fillText(this.letter, this.letterX, this.letterY);
             // ctx.clearRect(0, 0, screen.width, screen.height);
         }
     }
-    
+
+//============================================================================
 //ARRAY OF WORDS (OBJECTS)
     let words = [
     {
@@ -144,69 +153,130 @@ window.onload = () => {
         hint2: 'Mora no mar',
     }
 ];
-
 // let hint3 = `Tem ${words[0].length} letras`;
-
 
 //============================================================================
 
-    let letter = new Letter();
-    let player = new Player(50);
+    let letter = [];
+    let player = new Player(100);
     let count = 3;
     let startedGame = false;
     let startedScreen = false;
+    let numOfLettersOnScreen = 10;
+    let playerLetters = [];
+    let wrong = 0;
+
+for(let i = 0;  i < numOfLettersOnScreen; i+=1) {
+    letter[i] = new Letter();
+}
 
     function startScreen() {
         clearScreen();
         ctx.fillStyle = "white";
         ctx.font = screenWidth/10 + 'px Arial';
         ctx.fillText('ARE YOU READY?',screenWidth/2 - screenWidth/2.3, screenHeight/2 + 20);
-
-        if(count === 0) {
+        
+        if(count === 2) {
             clearInterval(intervalClearScreen);
             clearInterval(intervalStartScreen)
             clearScreen();
-            ctx.fillText('GO!',screenWidth/2 - screenWidth/20, screenHeight/2 + 20);
+            // ctx.fillText('GO!',screenWidth/2 - screenWidth/20, screenHeight/2 + 20);
             setTimeout(clearScreen, 1000);
             setTimeout(startGame, 1000);
             startedScreen = true;
         }
         return count--;
     }
-//============================================================================
+    
+    function chooseSecretWord() {
+        return words[Math.floor(Math.random() * words.length)];
+    }
 
     function startGame() {
         console.log('START - jogo começou');
         player.drawPlayer();
-        letter.callLetterOnScreen();
         startedGame = true;
     }
-
+    
     function restartGame() {
+        stop();
+        clear();
          console.log('RESTART - jogo restartou');
 
     }
 
     function clearScreen() {
-        ctx.clearRect(0, 0, screen.width, screen.height);
+        ctx.clearRect(-20, -20, screen.width, screen.height);
     }
 
-    
+    function getLetter(i) {
+        if(player.playerY < letter[i].letterY + letterSize/2 &&
+            player.left() < letter[i].letterX + letterSize/2 &&
+            player.right() > letter[i].letterX) {
+                
+                playerLetters.push(letter[i].letter)
+                letter[i].letterY = -20;
+                letter[i].letterX = Math.round(Math.random() * (screenWidth - 20));
+                letter[i].letter = letter[i].chooseLetter();
+            }
+    }
+
+    function wrongLetter() {
+            for(let i = 0; i < playerLetters.length; i =+ 1) {
+                if (playerLetters[i] !== secretWord.word[i]) {
+                wrong += 1;
+                return wrong;
+                }
+            }
+    }
+
+    function stop() {
+        clearInterval(intervalUpdateGame);
+        player.playerX = 0;
+        player.playerY = 0;
+        letter.forEach(element => {
+            element.letterX = 0;
+            element.letterY = 0;
+        })
+        //startedGame = false;
+        //startedScreen = false;
+        //clearScreen();
+        //letter = [];
+    }
+
+    function gameOver() {
+        if(wrong === 2) {
+            stop();
+            ctx.fillText('GAME OVER', screenWidth/2 - screenWidth/2.3, screenHeight/2 + 20)
+        }
+    }
+
 //============================================================================
+secretWord = chooseSecretWord();
+console.log(secretWord)
+
 
     function updateGame() {
+        console.log(wrong)
         if(startedScreen) {
             clearScreen();
             player.movePlayer();
             player.updatePlayer();
-        }
-        if(startedGame)
-            letter.moveLetter();
-        
+            wrongLetter();
+            if(wrong === 1){
+                stop();
+            }
 
-        // // startGame();
-        
-        // player.movePlayer()
+        }
+
+        if(startedGame) {
+            for(let i = 0; i < numOfLettersOnScreen; i+=1) {
+                setTimeout(() => {
+                    letter[i].drawAndMoveLetter();
+                }, i * 500);
+                getLetter(i);
+            }
+        }
     }
 //============================================================================
 
