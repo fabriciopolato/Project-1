@@ -301,6 +301,7 @@ window.onload = () => {
         if(secretPlayer.length !== secret.length) {
             return;
         } else {
+            stop();
             writeText(`BRILHANTE!`, screenWidth / 15, 'green', screenWidth / 2 - screenWidth / 2.75, screenHeight / 2 + 20);
         }
 
