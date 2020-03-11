@@ -49,7 +49,6 @@ window.onload = () => {
             this.updatePosition = { left: false, right: false };
             document.addEventListener('keydown', (event) => this.keyDownEvent(event.keyCode));
             document.addEventListener('keyup', (event) => this.keyUpEvent(event.keyCode));
-            console.log(this.updatePosition)
         }
 
         drawPlayer() {
@@ -88,7 +87,7 @@ window.onload = () => {
             if (this.updatePosition.left && this.playerX > screenWidth * 0.01) {
                 this.playerX -= this.playerSpeed;
             }
-            if (this.updatePosition.right && this.playerX < screenWidth * 0.96) {
+            if (this.updatePosition.right && this.playerX < screenWidth * 0.6645) {
                 this.playerX += this.playerSpeed;
             }
         }
@@ -117,7 +116,7 @@ window.onload = () => {
     class Letter {
         constructor() {
             //Math.round(Math.random() * (canvas.width - 20)) -- it selects a random X between 0 and canvas.width minus 20px (margin), so it can fit on the screen without passing it
-            this.letterX = Math.round(Math.random() * (screenWidth - 20));
+            this.letterX = Math.round(Math.random() * (screenWidth * 0.65) + screenWidth * 0.03);
             this.letterY = -20;
             this.arrayLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'Z'];
             this.speedLetter = 5;
@@ -134,13 +133,10 @@ window.onload = () => {
                 this.letterY += this.speedLetter;
             } else {
                 this.letterY = -20;
-                this.letterX = Math.round(Math.random() * (screenWidth * 0.94) + screenWidth * 0.03);
+                this.letterX = Math.round(Math.random() * (screenWidth * 0.65) + screenWidth * 0.03);
                 this.letter = this.chooseLetter();
             }
-            console.log('draw')
-            ctx.fillStyle = "white";
-            ctx.font = letterSize + 'px Arial'
-            ctx.fillText(this.letter, this.letterX, this.letterY);
+            writeText(this.letter, letterSize, 'white', this.letterX, this.letterY);
         }
     }
 
@@ -149,18 +145,17 @@ window.onload = () => {
     let words = [
         {
             word: 'ABACAXI',
-            length: 7,
-            hint1: 'É uma fruta',
-            hint2: 'É azeda'
+            hint1: '1) É uma fruta',
+            hint2: '2) É azeda',
+            hint3: '3) Tem coroa',
         },
         {
             word: 'BALEIA',
-            length: 6,
-            hint1: 'É um animal',
-            hint2: 'Mora no mar',
+            hint1: '1) É um animal',
+            hint2: '2) Mora no mar',
+            hint3: '3) É grande',
         }
     ];
-    // let hint3 = `Tem ${words[0].length} letras`;
 
     //============================================================================
 
@@ -169,25 +164,32 @@ window.onload = () => {
     let count = 3;
     let startedGame = false;
     let startedScreen = false;
-    let numOfCreatedLetters = 2;
+    let numOfCreatedLetters = 10;
     let playerLetters = [];
     let wrong = 0;
+    let secretWord = chooseSecretWord();
+    console.log(secretWord)
     
     for (let i = 0; i < numOfCreatedLetters; i += 1) {
         letter[i] = new Letter();
     }
-    
+
+
+    function writeText(text, fontSize, color, positionX, positionY, fontfamily = 'Arial') {
+        ctx.fillStyle = color;
+        ctx.font = fontSize + 'px ' + fontfamily;
+        ctx.fillText(text, positionX, positionY);
+    }
+
+
     function startScreen() {
         clearScreen();
-        ctx.fillStyle = "white";
-        ctx.font = screenWidth / 10 + 'px Arial';
-        ctx.fillText('ARE YOU READY?', screenWidth / 2 - screenWidth / 2.3, screenHeight / 2 + 20);
+        writeText('ARE YOU READY?', screenWidth / 10, 'white', screenWidth / 2 - screenWidth / 2.3, screenHeight / 2 + 20);
         
         if (count === 2) {
             clearInterval(intervalClearScreen);
             clearInterval(intervalStartScreen)
             clearScreen();
-            // ctx.fillText('GO!',screenWidth/2 - screenWidth/20, screenHeight/2 + 20);
             setTimeout(clearScreen, 1000);
             setTimeout(startGame, 1000);
             startedScreen = true;
@@ -195,16 +197,31 @@ window.onload = () => {
         return count--;
     }
     
+
     function chooseSecretWord() {
         return words[Math.floor(Math.random() * words.length)];
     }
+
+
+    function drawLines() {
+        let underline = screenWidth / 40;
+        let spacing = screenWidth / 30;
     
+        for(let i = 0; i < secretWord.word.length; i += 1){
+            ctx.beginPath();
+            ctx.lineWidth = 2;
+            ctx.moveTo(screenWidth - screenWidth / 3.7 + spacing * i, 1.8*screenHeight / 7 + 20);
+            ctx.lineTo(screenWidth - screenWidth / 3.7 + underline + spacing*i, 1.8*screenHeight / 7 + 20);
+            ctx.stroke();
+        }
+    }
    
+
     function startGame() {
-        console.log('START - jogo começou');
         player.drawPlayer();
         startedGame = true;
     }
+
 
     function restartGame() {
         stop();
@@ -222,12 +239,13 @@ window.onload = () => {
         }
         player.playerX = 100;
         player.playerY = screenHeight - player.playerHeight;
-        console.log('RESTART - jogo restartou');
     }
+
 
     function clearScreen() {
         ctx.clearRect(-20, -20, screen.width, screen.height);
     }
+
 
     function getLetter(i) {
         if (player.playerY < letter[i].letterY + letterSize / 2 &&
@@ -235,42 +253,42 @@ window.onload = () => {
             player.right() > letter[i].letterX) {
 
             playerLetters.push(letter[i].letter)
+
             letter[i].letterY = -20;
             letter[i].letterX = Math.round(Math.random() * (screenWidth - 20));
             letter[i].letter = letter[i].chooseLetter();
             wrongLetter();
-            console.log(`
-                ==================
-                GET LETTER = ${wrong}
-                VALOR I = ${i}
-                LENGTH PLAYER = ${playerLetters.length}
-                PLAYER = ${playerLetters}
-                `)
         }
     }
 
+
+    function writeCorrectLetter(secret, i) {
+        console.log(playerLetters)
+        let spacing = screenWidth / 30;
+        secret.forEach((element,index) => {
+            if(element === playerLetters[i]) {
+                writeText(element, screenWidth / 40, 'white', screenWidth / 1.365 + spacing * index, 1.65*screenHeight / 7 + 20);   
+            }
+        })
+    }
+
+
     function wrongLetter() {
-        for (let i = 0; i < playerLetters.length; i = + 1) {
+        for (let i = 0; i < playerLetters.length; i += 1) {
             if (playerLetters[i] !== secretWord.word[i]) {
                 wrong += 1;
-                console.log(`
-                ==================
-                WRONG LETTER = ${wrong}
-                VALOR I = ${i}
-                LENGTH PLAYER = ${playerLetters.length}
-                PLAYER = ${playerLetters}
-                `)
-                popLetter();
+                playerLetters.pop();
                 return;
             }
         }
+
     }
 
-    function popLetter() {
-        console.log(playerLetters)
-        playerLetters.pop();
-        console.log(playerLetters)
+
+    function hints(hint, positionY) {
+        writeText(hint, screenWidth / 35, 'white', screenWidth - screenWidth / 3.7, positionY)
     }
+
 
     function stop() {
         clearInterval(intervalUpdateGame);
@@ -280,31 +298,74 @@ window.onload = () => {
             element.letterX = 8000;
             element.letterY = -8000;
         })
+        startedGame = false;
     }
+
+
+    function gameWon() {
+        if(playerLetters.join('').length !== secretWord.word.length) {
+            return;
+        } else if(playerLetters.join('') === secretWord.word) {
+            stop();
+            writeText(`BRILHANTE!`, screenWidth / 15, 'green', screenWidth / 2 - screenWidth / 2.75, screenHeight / 2 + 20);
+        }
+        return;
+    }
+
 
     function gameOver() {
-        if (wrong === 10) {
+        if (wrong === 3) {
             stop();
-            ctx.font = screenWidth / 10 + 'px Arial';
-            ctx.fillText('GAME OVER', screenWidth / 2 - screenWidth / 3.5, screenHeight / 2 + 20)
+            writeText('GAME OVER', screenWidth / 15, 'red', screenWidth / 2 - screenWidth / 2.75, screenHeight / 2 + 20);
         }
-    }
 
+        writeText(`CHARADA`, screenWidth / 35, 'white', screenWidth - screenWidth / 4.5, 0.7*screenHeight / 7 + 20);
+        writeText(`ERROS: ${wrong}`, screenWidth / 35, 'white', screenWidth - screenWidth / 3.7, 6.3*screenHeight / 7 + 20);
+    }
     //============================================================================
-    secretWord = chooseSecretWord();
-    console.log(secretWord)
-    
 
     function updateGame() {
+
         if (startedScreen) {
             clearScreen();
+            drawLines();
             player.movePlayer();
             player.updatePlayer();
+            gameWon();
             gameOver();
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = 'white';
+            ctx.strokeRect(-20, -20, (screenWidth * 0.68) + screenWidth * 0.028, screenHeight + 40);
+            
+            switch(wrong) {
+                case 0 :
+                    hints(secretWord.hint1, 2.7*screenHeight / 7 + 20);
+                    hints(secretWord.hint2, 3.4*screenHeight / 7 + 20);
+                    break;
+                case 1:
+                    hints(secretWord.hint1, 2.7*screenHeight / 7 + 20);
+                    hints(secretWord.hint2, 3.4*screenHeight / 7 + 20);
+                    hints(secretWord.hint3, 4.1*screenHeight / 7 + 20);
+                    break;
+                
+                case 2:
+                    hints(secretWord.hint1, 2.7*screenHeight / 7 + 20);
+                    hints(secretWord.hint2, 3.4*screenHeight / 7 + 20);
+                    hints(secretWord.hint3, 4.1*screenHeight / 7 + 20);
+                    hints(secretWord.hint4, 4.8*screenHeight / 7 + 20);
+                    break;
+            }
         }
 
         if (startedGame) {
+            for(let i = 0; i < playerLetters.length; i += 1) {
+                writeCorrectLetter(secretWord.word.split(''), i);
+            }
+
             for (let i = 0; i < numOfCreatedLetters; i += 1) {
+                if(startedGame === false){
+                    break;
+                }
                setTimeout(() => {
                         letter[i].drawAndMoveLetter();
                 }, i*500);
@@ -313,5 +374,4 @@ window.onload = () => {
         }
     }
     //============================================================================
-
 }
