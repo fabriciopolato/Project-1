@@ -39,8 +39,8 @@ window.onload = () => {
     //PLAYER
     class Player {
         constructor(playerX) {
-            this.playerWidth = 40;
-            this.playerHeight = 40;
+            this.playerWidth = screenHeight / 15;
+            this.playerHeight = screenHeight / 15;
             this.playerX = playerX;
             this.playerY = screenHeight - this.playerHeight;
             this.playerRight = playerX + this.playerWidth;
@@ -98,7 +98,15 @@ window.onload = () => {
         }
 
         left() {
-            return this.playerX
+            return this.playerX = this.playerX
+        }
+
+        top() {
+            return this.playerY = this.playerY;
+        }
+
+        bottom() {
+            return this.playerBottom = this.playerY + this.playerHeight;
         }
     }
     //============================================================================
@@ -199,15 +207,22 @@ window.onload = () => {
     }
 
     function restartGame() {
-        clearInterval(intervalUpdateGame)
         stop();
         clearScreen();
-        startScreen();
-        intervalClearScreen = setInterval(clearScreen, 500)
-        intervalStartScreen = setInterval(startScreen, 1000)
+        startedScreen = true;
+        playerLetters = [];
+        count = 3;
+        wrong = 0;
+        startGame();
         intervalUpdateGame = setInterval(updateGame, 20)
+        for(let i = 0; i < numOfCreatedLetters; i += 1) {
+            letter[i].letterY = -20;
+            letter[i].letterX = Math.round(Math.random() * (screenWidth - 20));
+            letter[i].letter = letter[i].chooseLetter();
+        }
+        player.playerX = 100;
+        player.playerY = screenHeight - player.playerHeight;
         console.log('RESTART - jogo restartou');
-
     }
 
     function clearScreen() {
@@ -281,8 +296,6 @@ window.onload = () => {
     
 
     function updateGame() {
-        frames += 1;
-
         if (startedScreen) {
             clearScreen();
             player.movePlayer();
@@ -292,7 +305,7 @@ window.onload = () => {
 
         if (startedGame) {
             for (let i = 0; i < numOfCreatedLetters; i += 1) {
-                setTimeout(() => {
+               setTimeout(() => {
                         letter[i].drawAndMoveLetter();
                 }, i*500);
                 getLetter(i);
