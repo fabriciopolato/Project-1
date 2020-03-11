@@ -22,15 +22,6 @@ window.onload = () => {
         screenWidth = document.getElementById("canvas").clientWidth;
         screenHeight = document.getElementById("canvas").clientHeight;
 
-        console.log(`
-        ============================
-        screenWidth: ${screenWidth}
-        canvas.width: ${canvas.width}
-        screenHeight: ${screenHeight}
-        canvas.height: ${canvas.height}
-        ============================
-        `);
-
         canvas.width = screenWidth;
         canvas.height = screenHeight;
     })
@@ -121,6 +112,7 @@ window.onload = () => {
             this.arrayLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'Z'];
             this.speedLetter = 5;
             this.letter = this.chooseLetter();
+            letterSize = screenWidth / 35;
         }
 
         chooseLetter() {
@@ -136,7 +128,7 @@ window.onload = () => {
                 this.letterX = Math.round(Math.random() * (screenWidth * 0.65) + screenWidth * 0.03);
                 this.letter = this.chooseLetter();
             }
-            writeText(this.letter, letterSize, 'white', this.letterX, this.letterY);
+            writeText(this.letter, this.letterSize, 'white', this.letterX, this.letterY);
         }
     }
 
@@ -168,7 +160,7 @@ window.onload = () => {
     let playerLetters = [];
     let wrong = 0;
     let secretWord = chooseSecretWord();
-    console.log(secretWord)
+    //let playerLetters = [];
     
     for (let i = 0; i < numOfCreatedLetters; i += 1) {
         letter[i] = new Letter();
@@ -253,6 +245,7 @@ window.onload = () => {
             player.right() > letter[i].letterX) {
 
             playerLetters.push(letter[i].letter)
+            //playerLetters.push(letter[i].letter)
 
             letter[i].letterY = -20;
             letter[i].letterX = Math.round(Math.random() * (screenWidth - 20));
@@ -263,7 +256,6 @@ window.onload = () => {
 
 
     function writeCorrectLetter(secret, i) {
-        console.log(playerLetters)
         let spacing = screenWidth / 30;
         secret.forEach((element,index) => {
             if(element === playerLetters[i]) {
@@ -275,7 +267,7 @@ window.onload = () => {
 
     function wrongLetter() {
         for (let i = 0; i < playerLetters.length; i += 1) {
-            if (playerLetters[i] !== secretWord.word[i]) {
+            if (secretWord.word.split("").includes(playerLetters[i]) === false) {
                 wrong += 1;
                 playerLetters.pop();
                 return;
@@ -303,13 +295,15 @@ window.onload = () => {
 
 
     function gameWon() {
-        if(playerLetters.join('').length !== secretWord.word.length) {
+        let secret = [...new Set(secretWord.word)];
+        let secretPlayer = [...new Set(playerLetters)];
+
+        if(secretPlayer.length !== secret.length) {
             return;
-        } else if(playerLetters.join('') === secretWord.word) {
-            stop();
+        } else {
             writeText(`BRILHANTE!`, screenWidth / 15, 'green', screenWidth / 2 - screenWidth / 2.75, screenHeight / 2 + 20);
         }
-        return;
+
     }
 
 
@@ -340,19 +334,15 @@ window.onload = () => {
             switch(wrong) {
                 case 0 :
                     hints(secretWord.hint1, 2.7*screenHeight / 7 + 20);
-                    hints(secretWord.hint2, 3.4*screenHeight / 7 + 20);
                     break;
                 case 1:
                     hints(secretWord.hint1, 2.7*screenHeight / 7 + 20);
                     hints(secretWord.hint2, 3.4*screenHeight / 7 + 20);
-                    hints(secretWord.hint3, 4.1*screenHeight / 7 + 20);
                     break;
-                
                 case 2:
                     hints(secretWord.hint1, 2.7*screenHeight / 7 + 20);
                     hints(secretWord.hint2, 3.4*screenHeight / 7 + 20);
                     hints(secretWord.hint3, 4.1*screenHeight / 7 + 20);
-                    hints(secretWord.hint4, 4.8*screenHeight / 7 + 20);
                     break;
             }
         }
