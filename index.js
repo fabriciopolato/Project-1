@@ -10,10 +10,8 @@ window.onload = () => {
 
     //EVENT LISTENERS
     document.getElementById('btn-start').onclick = () => {
-        intervalClearScreen = setInterval(clearScreen, 500)
-        intervalStartScreen = setInterval(startScreen, 1000)
-        intervalUpdateGame = setInterval(updateGame, 20)
-
+        initiate();
+        startedInitiate = false;
     };
     document.getElementById('btn-restart').onclick = () => {
         restartGame();
@@ -105,12 +103,12 @@ window.onload = () => {
     let letterSize = screenWidth / 35;
 
     class Letter {
-        constructor() {
+        constructor(speedLetter = 1) {
             //Math.round(Math.random() * (canvas.width - 20)) -- it selects a random X between 0 and canvas.width minus 20px (margin), so it can fit on the screen without passing it
             this.letterX = Math.round(Math.random() * (screenWidth * 0.65) + screenWidth * 0.03);
             this.letterY = -20;
             this.arrayLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'Z'];
-            this.speedLetter = 5;
+            this.speedLetter = 1 * speedLetter;
             this.letter = this.chooseLetter();
             letterSize = screenWidth / 35;
         }
@@ -156,17 +154,23 @@ window.onload = () => {
     let count = 3;
     let startedGame = false;
     let startedScreen = false;
+    let startedInitiate = true;
     let numOfCreatedLetters = 10;
     let playerLetters = [];
     let wrong = 0;
     let secretWord = chooseSecretWord();
-    //let playerLetters = [];
     
     for (let i = 0; i < numOfCreatedLetters; i += 1) {
-        letter[i] = new Letter();
+        letter[i] = new Letter(i);
     }
 
-
+    function initiate() {
+        if(startedInitiate) {
+        intervalClearScreen = setInterval(clearScreen, 500)
+        intervalStartScreen = setInterval(startScreen, 1000)
+        intervalUpdateGame = setInterval(updateGame, 20)
+        }
+    }
     function writeText(text, fontSize, color, positionX, positionY, fontfamily = 'Arial') {
         ctx.fillStyle = color;
         ctx.font = fontSize + 'px ' + fontfamily;
@@ -245,10 +249,9 @@ window.onload = () => {
             player.right() > letter[i].letterX) {
 
             playerLetters.push(letter[i].letter)
-            //playerLetters.push(letter[i].letter)
 
             letter[i].letterY = -20;
-            letter[i].letterX = Math.round(Math.random() * (screenWidth - 20));
+            letter[i].letterX = Math.round(Math.random() * (screenWidth * 0.65) + screenWidth * 0.03);
             letter[i].letter = letter[i].chooseLetter();
             wrongLetter();
         }
