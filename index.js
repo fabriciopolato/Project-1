@@ -286,7 +286,12 @@ window.onload = () => {
         }
         return count--;
     }
-    
+
+    function drawBlackBoard() {
+        imgBlackBoard.src = './imgs/BlackBoard.png';
+        ctx.drawImage(imgBlackBoard, 0, 0, screenWidth, screenHeight)
+    }
+
 //function to choose a Secret Word for the charade
     function chooseSecretWord() {
         return words[Math.floor(Math.random() * words.length)];
@@ -450,6 +455,7 @@ window.onload = () => {
 
         if (startedScreen) {
             clearScreen();
+            drawBlackBoard();
             drawLines();
             player.movePlayer();
             player.updatePlayer();
