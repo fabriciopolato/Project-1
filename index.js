@@ -14,17 +14,27 @@ window.onload = () => {
     document.getElementById('btn-start').onclick = () => {
         initiate();
         startedInitiate = false;
-    };
-    document.getElementById('btn-restart').onclick = () => {
-        restartGame();
-    }
-    window.addEventListener('resize', function () {
-        screenWidth = document.getElementById("canvas").clientWidth;
-        screenHeight = document.getElementById("canvas").clientHeight;
-
         canvas.width = screenWidth;
         canvas.height = screenHeight;
-    })
+    };
+
+    document.getElementById('btn-restart').onclick = () => {
+        restartGame();
+        canvas.width = screenWidth;
+        canvas.height = screenHeight;
+    }
+
+    document.getElementById('btn-easy').onclick = () => {
+        easy();
+    }
+
+    document.getElementById('btn-medium').onclick = () => {
+        medium();
+    }
+
+    document.getElementById('btn-hard').onclick = () => {
+        hard();
+    }
 
     //============================================================================
     //PLAYER
@@ -164,7 +174,7 @@ window.onload = () => {
             word: 'CORONA',
             hint1: '1) Cerveja',
             hint2: '2) Vírus',
-            hint3: '3) Epidemia'
+            hint3: '3) China'
         },
         
 
@@ -182,21 +192,10 @@ window.onload = () => {
     let startedGame = false;
     let startedScreen = false;
     let startedInitiate = true;
-    let numOfCreatedLetters = 20;
+    let numOfCreatedLetters = 10;
     let playerLetters = [];
     let wrong = 0;
     let secretWord = chooseSecretWord();
-
-//instantiate new Letter based on numOfCreatedLetters
-    for (let i = 0; i < numOfCreatedLetters; i += 1) {
-        if(numOfCreatedLetters <= 10) {
-            letter[i] = new Letter(i*1.5 + 0.5);
-        } else if (numOfCreatedLetters > 10 && numOfCreatedLetters <= 20) {
-            letter[i] = new Letter(i/2);
-        } else {
-            letter[i] = new Letter(i/3);
-        }
-    }
 
 //function called by pressing the PLAY button, it initiates the game
     function initiate() {
@@ -205,6 +204,19 @@ window.onload = () => {
         intervalStartScreen = setInterval(startScreen, 1000)
         intervalUpdateGame = setInterval(updateGame, 20)
         }
+    }
+
+//functions to select the difficulty of the game
+    function easy() {
+        numOfCreatedLetters = 10;
+    }
+
+    function medium() {
+        numOfCreatedLetters = 20;
+    }
+
+    function hard() {
+        numOfCreatedLetters = 50;
     }
 
 //function to write texts on the element Canvas
@@ -216,13 +228,11 @@ window.onload = () => {
 
 //function to call the texts on the Start Screen
     function startScreen() {
-        clearScreen();
         writeText('ARE YOU READY?', screenWidth / 10, 'white', screenWidth / 2 - screenWidth / 2.3, screenHeight / 2 + 20);
         
         if (count === 2) {
             clearInterval(intervalClearScreen);
             clearInterval(intervalStartScreen)
-            clearScreen();
             setTimeout(clearScreen, 1000);
             setTimeout(startGame, 1000);
             startedScreen = true;
@@ -252,6 +262,16 @@ window.onload = () => {
 //function to start the game after Start Screen is played
     function startGame() {
         player.drawPlayer();
+        //instantiate new Letter based on numOfCreatedLetters
+    for (let i = 0; i < numOfCreatedLetters; i += 1) {
+        if(numOfCreatedLetters <= 10) {
+            letter[i] = new Letter(i*1.5 + 0.5);
+        } else if (numOfCreatedLetters > 10 && numOfCreatedLetters <= 20) {
+            letter[i] = new Letter(i/2);
+        } else {
+            letter[i] = new Letter(i/3);
+        }
+    }
         startedGame = true;
     }
 
@@ -271,11 +291,6 @@ window.onload = () => {
             secretWord = chooseSecretWord();
             player.playerX = 100;
             player.playerY = screenHeight - player.playerHeight;
-
-            for (let i = 0; i < numOfCreatedLetters; i += 1) {
-                letter[i] = new Letter(i);
-            }
-
             intervalUpdateGame = setInterval(updateGame, 20)
             startGame();
 
@@ -366,7 +381,7 @@ window.onload = () => {
 
 //function to decide when the player loses the game
     function gameOver() {
-        if (wrong === 3) {
+        if (wrong >= 3) {
             stop();
             writeText('GAME OVER', screenWidth / 15, 'red', screenWidth / 2 - screenWidth / 2.75, screenHeight / 2 + 20);
         }
@@ -375,7 +390,7 @@ window.onload = () => {
             writeCorrectLetter(secretWord.word.split(''), i);
         }
         writeText(`CHARADA`, screenWidth / 35, 'white', screenWidth - screenWidth / 4.5, 0.7*screenHeight / 7 + 20);
-        writeText(`ERROS: ${wrong}`, screenWidth / 35, 'white', screenWidth - screenWidth / 3.7, 6.3*screenHeight / 7 + 20);
+        writeText(`ERROS: ${wrong}`, screenWidth / 45, 'white', screenWidth - screenWidth / 3.7, 6.3*screenHeight / 7 + 20);
     }
     
     //============================================================================
@@ -418,9 +433,8 @@ window.onload = () => {
                 if(startedGame === false){
                     break;
                 }
-               setTimeout(() => {
-                        letter[i].drawAndMoveLetter();
-                }, i*500);
+                
+                letter[i].drawAndMoveLetter();
                 getLetter(i);
             }
         }
