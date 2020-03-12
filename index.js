@@ -9,6 +9,12 @@ window.onload = () => {
     let intervalStartScreen = 0;
     let intervalUpdateGame = 0;
 
+    let audioCaughtLetter = new Audio();
+    audioCaughtLetter.src = './imgs/Bubble.mp3';
+
+    let imgBlackBoard = new Image();
+    imgBlackBoard.src = './imgs/BlackBoard.png';
+
     //========================================================================
     //EVENT LISTENERS
     document.getElementById('btn-start').onclick = () => {
@@ -26,14 +32,26 @@ window.onload = () => {
 
     document.getElementById('btn-easy').onclick = () => {
         easy();
+        activeEasy = true;
+        activeMedium = false;
+        activeHard = false;
+        setInterval(updateGame, 20);
     }
 
     document.getElementById('btn-medium').onclick = () => {
         medium();
+        activeEasy = false;
+        activeMedium = true;
+        activeHard = false;
+        setInterval(updateGame, 20);
     }
 
     document.getElementById('btn-hard').onclick = () => {
         hard();
+        activeEasy = false;
+        activeMedium = false;
+        activeHard = true;
+        setInterval(updateGame, 20);
     }
 
     //============================================================================
@@ -48,12 +66,13 @@ window.onload = () => {
             this.playerBottom = this.playerY + this.playerHeight;
             this.playerSpeed = 20;
             this.updatePosition = { left: false, right: false };
+            this.imgPlayer = new Image();
             document.addEventListener('keydown', (event) => this.keyDownEvent(event.keyCode));
             document.addEventListener('keyup', (event) => this.keyUpEvent(event.keyCode));
         }
 
         drawPlayer() {
-            ctx.fillStyle = 'red';
+            this.imgPlayer.src = ''
             ctx.fillRect(this.playerX, this.playerY, this.playerWidth, this.playerHeight);
         }
 
@@ -171,15 +190,11 @@ window.onload = () => {
             hint3: '3) Chile'
         },
         {
-            word: 'CORONA',
-            hint1: '1) Cerveja',
-            hint2: '2) Vírus',
+            word: 'TRIATLON',
+            hint1: '1) Esporte',
+            hint2: '2) ',
             hint3: '3) China'
-        },
-        
-
-        
-        
+        }       
     ];
 
     //============================================================================
@@ -196,6 +211,11 @@ window.onload = () => {
     let playerLetters = [];
     let wrong = 0;
     let secretWord = chooseSecretWord();
+    let activeEasy = false;
+    let activeMedium = false;
+    let activeHard = false;
+    let activeButton = 0;
+    //setInterval(updateGame, 20);
 
 //function called by pressing the PLAY button, it initiates the game
     function initiate() {
@@ -216,11 +236,38 @@ window.onload = () => {
     }
 
     function hard() {
-        numOfCreatedLetters = 50;
+        numOfCreatedLetters = 30;
     }
 
+//function to activate the "button pressed effect" on the difficulty buttons
+
+    function activateButton() {
+        if(activeEasy) {
+            activeButton = document.getElementById('btn-easy');
+            activeButton.classList.remove('button-active')
+        } else {
+            activeButton = document.getElementById('btn-easy');
+            activeButton.classList.add('button-active')
+        }
+
+        if(activeMedium) {
+            activeButton = document.getElementById('btn-medium');
+            activeButton.classList.remove('button-active')
+        } else {
+            activeButton = document.getElementById('btn-medium');
+            activeButton.classList.add('button-active')
+        }
+
+        if(activeHard) {
+            activeButton = document.getElementById('btn-hard');
+            activeButton.classList.remove('button-active')
+        } else {
+            activeButton = document.getElementById('btn-hard');
+            activeButton.classList.add('button-active')
+        }
+    }
 //function to write texts on the element Canvas
-    function writeText(text, fontSize, color, positionX, positionY, fontfamily = 'Arial') {
+    function writeText(text, fontSize, color, positionX, positionY, fontfamily = 'Arvo') {
         ctx.fillStyle = color;
         ctx.font = fontSize + 'px ' + fontfamily;
         ctx.fillText(text, positionX, positionY);
@@ -230,7 +277,7 @@ window.onload = () => {
     function startScreen() {
         writeText('ARE YOU READY?', screenWidth / 10, 'white', screenWidth / 2 - screenWidth / 2.3, screenHeight / 2 + 20);
         
-        if (count === 2) {
+        if (count === 1) {
             clearInterval(intervalClearScreen);
             clearInterval(intervalStartScreen)
             setTimeout(clearScreen, 1000);
@@ -312,7 +359,8 @@ window.onload = () => {
         if (player.playerY < letter[i].letterY + letterSize / 2 &&
             player.left() < letter[i].letterX + letterSize / 2 &&
             player.right() > letter[i].letterX) {
-
+            
+            audioCaughtLetter.play();
             playerLetters.push(letter[i].letter)
 
             letter[i].letterY = -20;
@@ -383,6 +431,7 @@ window.onload = () => {
     function gameOver() {
         if (wrong >= 3) {
             stop();
+            //ctx.drawImage(img, 0, 0, screenWidth / 2 - screenWidth / 2.75, screenHeight / 2 + 20);
             writeText('GAME OVER', screenWidth / 15, 'red', screenWidth / 2 - screenWidth / 2.75, screenHeight / 2 + 20);
         }
 
@@ -396,6 +445,8 @@ window.onload = () => {
     //============================================================================
 //function to keep the game running and updating, it's called by the PLAY and RESTART buttons
     function updateGame() {
+            
+        activateButton();
 
         if (startedScreen) {
             clearScreen();

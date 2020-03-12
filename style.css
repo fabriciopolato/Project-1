@@ -50,3 +50,7 @@ body {
     background-color: rgb(116, 36, 36) !important;
     border: rgb(116, 36, 36) !important;
 }
+
+.button-active {
+    opacity: 0.3;
+}
