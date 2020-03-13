@@ -261,7 +261,7 @@ window.onload = () => {
 
 //function to call the texts on the Start Screen
     function startScreen() {
-        writeText('ARE YOU READY?', screenWidth / 10, 'white', screenWidth / 2 - screenWidth / 2.3, screenHeight / 2 + 20);
+        writeText(`ARE YOU READY? ${count}`, screenWidth / 10, 'white', screenWidth / 2 - screenWidth / 2.3, screenHeight / 2 + 20);
         
         if (count === 0) {
             clearInterval(intervalClearScreen);
@@ -420,7 +420,7 @@ window.onload = () => {
 
 //function to decide when the player loses the game
     function gameOver() {
-        if (wrong >= 10) {
+        if (wrong >= 3) {
             stop();
             writeText('GAME OVER', screenWidth / 15, 'white', screenWidth / 2 - screenWidth / 2.75, screenHeight / 2 + 20);
         }
