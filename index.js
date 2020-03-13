@@ -261,7 +261,7 @@ window.onload = () => {
 
 //function to call the texts on the Start Screen
     function startScreen() {
-        writeText(`ARE YOU READY? ${count}`, screenWidth / 10, 'white', screenWidth / 2 - screenWidth / 2.3, screenHeight / 2 + 20);
+        writeText(`${count}`, screenWidth / 10, 'white', screenWidth / 2 - screenWidth / 20, screenHeight / 2 + 20);
         
         if (count === 0) {
             clearInterval(intervalClearScreen);
