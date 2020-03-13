@@ -32,8 +32,8 @@ You can start the game by pressing the PLAY button. After you have done it once,
 The game presents some minor bugs that I intend to fix when I have some free time.
 Below, there are some bugs I noted so far:
 
-- [ ] After you press PLAY, the first sentence on the screen is **ARE YOU READY?** and if you pay attention, you will see that the first time the sentence appears it blinks in a different font letter. 
 - [ ] First time you play the game, it can start really fast regardless the difficulty. When you reload the page, it starts to work normally.
+- [ ] After you press PLAY, if you press it again, as desired it won't start the game however it will make the screen blink
 - [ ] First time the player appears, it blinks on the screen.
 
 ## PLAY
