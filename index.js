@@ -10,10 +10,10 @@ window.onload = () => {
     let intervalUpdateGame = 0;
 
     let audioCaughtLetter = new Audio();
-    audioCaughtLetter.src = './imgs/Bubble.mp3';
+    audioCaughtLetter.src = './imgs_audios/Bubble.mp3';
 
     let imgBlackBoard = new Image();
-    imgBlackBoard.src = './imgs/BlackBoard.png';
+    imgBlackBoard.src = './imgs_audios/BlackBoard.png';
 
     //========================================================================
     //EVENT LISTENERS
@@ -58,10 +58,10 @@ window.onload = () => {
     //PLAYER
     class Player {
         constructor(playerX) {
-            this.playerWidth = screenHeight / 15;
-            this.playerHeight = screenHeight / 15;
+            this.playerWidth = screenHeight / 5;
+            this.playerHeight = screenHeight / 13;
             this.playerX = playerX;
-            this.playerY = screenHeight - this.playerHeight;
+            this.playerY = screenHeight - this.playerHeight - screenHeight / 100;
             this.playerRight = playerX + this.playerWidth;
             this.playerBottom = this.playerY + this.playerHeight;
             this.playerSpeed = 20;
@@ -72,13 +72,12 @@ window.onload = () => {
         }
 
         drawPlayer() {
-            this.imgPlayer.src = ''
-            ctx.fillRect(this.playerX, this.playerY, this.playerWidth, this.playerHeight);
+            this.imgPlayer.src = './imgs_audios/Book.png';
+            ctx.drawImage(this.imgPlayer, this.playerX, this.playerY, this.playerWidth, this.playerHeight);
         }
 
         updatePlayer() {
-            ctx.fillStyle = 'red';
-            ctx.fillRect(this.playerX, this.playerY, this.playerWidth, this.playerHeight);
+            ctx.drawImage(this.imgPlayer, this.playerX, this.playerY, this.playerWidth, this.playerHeight);
         }
 
         keyUpEvent(keyCode) {
@@ -107,7 +106,7 @@ window.onload = () => {
             if (this.updatePosition.left && this.playerX > screenWidth * 0.01) {
                 this.playerX -= this.playerSpeed;
             }
-            if (this.updatePosition.right && this.playerX < screenWidth * 0.65) {
+            if (this.updatePosition.right && this.playerX < screenWidth * 0.63) {
                 this.playerX += this.playerSpeed;
             }
         }
@@ -135,7 +134,6 @@ window.onload = () => {
 
     class Letter {
         constructor(speedLetter = 1) {
-            //Math.round(Math.random() * (canvas.width - 20)) -- it selects a random X between 0 and canvas.width minus 20px (margin), so it can fit on the screen without passing it
             this.letterX = Math.round(Math.random() * (screenWidth * 0.65) + screenWidth * 0.02);
             this.letterY = -20;
             this.arrayLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'Z'];
@@ -172,12 +170,6 @@ window.onload = () => {
             hint3: '3) Coroa'
         },
         {
-            word: 'BALEIA',
-            hint1: '1) Animal',
-            hint2: '2) Grande',
-            hint3: '3) Mar'
-        },
-        {
             word: 'CEREBRO',
             hint1: '1) Orgão',
             hint2: '2) Muito usado',
@@ -185,16 +177,10 @@ window.onload = () => {
         },
         {
             word: 'BALEIA',
-            hint1: '1) Cidade',
-            hint2: '2) América do Sul',
-            hint3: '3) Chile'
-        },
-        {
-            word: 'TRIATLON',
-            hint1: '1) Esporte',
-            hint2: '2) ',
-            hint3: '3) China'
-        }       
+            hint1: '1) Animal',
+            hint2: '2) Grande',
+            hint3: '3) Mar'
+        }
     ];
 
     //============================================================================
@@ -220,9 +206,9 @@ window.onload = () => {
 //function called by pressing the PLAY button, it initiates the game
     function initiate() {
         if(startedInitiate) {
-        intervalClearScreen = setInterval(clearScreen, 500)
-        intervalStartScreen = setInterval(startScreen, 1000)
-        intervalUpdateGame = setInterval(updateGame, 20)
+            intervalClearScreen = setInterval(clearScreen, 700)
+            intervalStartScreen = setInterval(startScreen, 1400)
+            intervalUpdateGame = setInterval(updateGame, 20)
         }
     }
 
@@ -232,11 +218,11 @@ window.onload = () => {
     }
 
     function medium() {
-        numOfCreatedLetters = 20;
+        numOfCreatedLetters = 15;
     }
 
     function hard() {
-        numOfCreatedLetters = 30;
+        numOfCreatedLetters = 20;
     }
 
 //function to activate the "button pressed effect" on the difficulty buttons
@@ -277,7 +263,7 @@ window.onload = () => {
     function startScreen() {
         writeText('ARE YOU READY?', screenWidth / 10, 'white', screenWidth / 2 - screenWidth / 2.3, screenHeight / 2 + 20);
         
-        if (count === 1) {
+        if (count === 0) {
             clearInterval(intervalClearScreen);
             clearInterval(intervalStartScreen)
             setTimeout(clearScreen, 1000);
@@ -288,7 +274,7 @@ window.onload = () => {
     }
 
     function drawBlackBoard() {
-        imgBlackBoard.src = './imgs/BlackBoard.png';
+        imgBlackBoard.src = './imgs_audios/BlackBoard.png';
         ctx.drawImage(imgBlackBoard, 0, 0, screenWidth, screenHeight)
     }
 
@@ -317,11 +303,11 @@ window.onload = () => {
         //instantiate new Letter based on numOfCreatedLetters
     for (let i = 0; i < numOfCreatedLetters; i += 1) {
         if(numOfCreatedLetters <= 10) {
-            letter[i] = new Letter(i*1.5 + 0.5);
-        } else if (numOfCreatedLetters > 10 && numOfCreatedLetters <= 20) {
-            letter[i] = new Letter(i/2);
+            letter[i] = new Letter(i/2 + 0.5);
+        } else if (numOfCreatedLetters > 10 && numOfCreatedLetters < 20) {
+            letter[i] = new Letter(i/4.5);
         } else {
-            letter[i] = new Letter(i/3);
+            letter[i] = new Letter(i/6.5);
         }
     }
         startedGame = true;
@@ -405,11 +391,11 @@ window.onload = () => {
 //function to stop the game
     function stop() {
         clearInterval(intervalUpdateGame);
-        player.playerX = 8000;
-        player.playerY = 8000;
+        player.playerX = screenWidth / 3;
+        player.playerY = screenHeight;
         letter.forEach(element => {
-            element.letterX = 8000;
-            element.letterY = -8000;
+            element.letterX = 0;
+            element.letterY = 0;
         })
         startedGame = false;
     }
@@ -423,7 +409,7 @@ window.onload = () => {
             return;
         } else {
             stop();
-            writeText(`BRILHANTE!`, screenWidth / 15, 'green', screenWidth / 2 - screenWidth / 2.75, screenHeight / 2 + 20);
+            writeText(`BRILHANTE!`, screenWidth / 15, 'white', screenWidth / 2 - screenWidth / 2.75, screenHeight / 2 + 20);
         }
 
         for(let i = 0; i < playerLetters.length; i += 1) {
@@ -434,10 +420,9 @@ window.onload = () => {
 
 //function to decide when the player loses the game
     function gameOver() {
-        if (wrong >= 3) {
+        if (wrong >= 10) {
             stop();
-            //ctx.drawImage(img, 0, 0, screenWidth / 2 - screenWidth / 2.75, screenHeight / 2 + 20);
-            writeText('GAME OVER', screenWidth / 15, 'red', screenWidth / 2 - screenWidth / 2.75, screenHeight / 2 + 20);
+            writeText('GAME OVER', screenWidth / 15, 'white', screenWidth / 2 - screenWidth / 2.75, screenHeight / 2 + 20);
         }
 
         for(let i = 0; i < playerLetters.length; i += 1) {
@@ -461,9 +446,13 @@ window.onload = () => {
             player.updatePlayer();
             gameWon();
             gameOver();
+
             ctx.lineWidth = 5;
             ctx.strokeStyle = 'white';
-            ctx.strokeRect(-20, -20, (screenWidth * 0.68) + screenWidth * 0.028, screenHeight + 40);
+            ctx.beginPath();
+            ctx.moveTo((screenWidth * 0.68) + screenWidth * 0.028, screenHeight / 10);
+            ctx.lineTo((screenWidth * 0.68) + screenWidth * 0.028, screenHeight - screenHeight / 10)
+            ctx.stroke();
             
             switch(wrong) {
                 case 0 :

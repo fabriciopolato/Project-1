@@ -1,9 +1,8 @@
-/* font-family: 'Amatic SC', cursive;
-font-family: 'Alfa Slab One', cursive; */
 body {
     font-size: 10em;
     margin: 0;
     padding: 0;
+    background-color: black !important;
 }
 
 #canvas {
@@ -27,28 +26,38 @@ body {
 
 #btn-start {
     margin: 0 !important;
+    box-shadow: none !important;
+    
 }
 
 #btn-restart  {
     margin: 0 25vw 0 0 !important;
+    box-shadow: none !important;
 }
 
 #btn-easy {
     margin: 0 !important;
-    background-color: rgb(42, 97, 66) !important;
-    border: rgb(42, 97, 66) !important;
+    background-color: rgb(42, 97, 66);
+    border: rgb(42, 97, 66);
+    color: white;
+    outline: none;
+    box-shadow: none !important;
 }
 
 #btn-medium{
     margin: 0 !important;
-    background-color: rgb(155, 147, 41) !important;
-    border: rgb(155, 147, 41) !important;
+    background-color: rgb(155, 147, 41);
+    border: rgb(155, 147, 41);
+    color: white;
+    box-shadow: none !important;
 }
 
 #btn-hard {
     margin: 0 1vw 0 0 !important;
-    background-color: rgb(116, 36, 36) !important;
-    border: rgb(116, 36, 36) !important;
+    background-color: rgb(116, 36, 36);
+    border: rgb(116, 36, 36);
+    color: white;
+    box-shadow: none !important;
 }
 
 .button-active {
