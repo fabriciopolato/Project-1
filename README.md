@@ -37,7 +37,7 @@ Below, there are some bugs I noted so far:
 - [ ] First time the player appears, it blinks on the screen.
 
 ## PLAY
-You can play the game by clicking [HERE](https://fapolato.github.io/fapolato/)
+You can play the game by clicking [HERE](https://fapolato.github.io/Project-1/)
 
 ## CONTRIBUTING
 This is a free software, feel free to contribute in any way you want
