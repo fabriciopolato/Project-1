@@ -17,8 +17,8 @@ You can start the game by pressing the PLAY button. After you have done it once,
 1. At the right side of the screen, white dashes show the number of letters of the secret word.
 1. The first hint appears below the dashes, so you can start to guess the letters.
 1. When you start the game, letters start to fall out.
-1. While the letters are falling, you must move your dictionary to try to collect the letters you think are included in the secret word.
-1. If you get a wrong letter, you commit one error.
+1. While the letters are falling, you must move the dictionary to try to collect the letters you think are included in the secret word.
+1. If you get a wrong letter, you commit an error.
 1. At each error, a new hint is released, so you can guess more accurately.
 1. Be aware, at the end of three errors, you lose the game.
 
