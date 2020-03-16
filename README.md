@@ -6,7 +6,7 @@ I would like to thank IronHack Brazil for all support along the course that was 
 
 ## THE PROJECT
 This project was part of the Web Development Bootcamp at IronHack Brazil. This is the first of three projects that are mandatory to graduate at the course.
-All the used knowledge in this project was adquired during the first 2 weeks of bootcamp. Since we didn't have too much time to finish it, the game presents some minor bugs that yet need to be fixed. I hope I  will be working on it as soon as I get more free time.
+All the used knowledge in this project was acquired during the first 2 weeks of bootcamp. Since we didn't have too much time to finish it, the game presents some minor bugs that yet need to be fixed. I hope I  will be working on it as soon as I get more free time.
 
 ## THE GAME
 Charada is a portuguese word for charade. The main goal of this game is to find out the secret word on the right side of the screen, letter by letter. You win the game when you find out all the right letters of the secret word. You lose the game when you get 3 wrong letters. This game reassembles the Hangman game in some way.
