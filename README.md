@@ -38,11 +38,11 @@ Below, there are some bugs I noted so far:
 - [ ] First time the player appears, it blinks on the screen.
 
 ## PLAY
-You can play the game by clicking [HERE](https://fapolato.github.io/Project-1/)
+You can play the game by clicking [HERE](https://fabriciopolato.github.io/Project-1/)
 
 ## CONTRIBUTING
 This is a free software, feel free to contribute in any way you want!
-1. Fork it (https://fapolato.github.io/Project-1/fork)
+1. Fork it (https://fabriciopolato.github.io/Project-1/fork)
 1. Create your feature branch (git commit -am 'Add some fooBar')
 1. Commit you changes (git push origin feature/fooBar)
 1. Create a new Pull Request
